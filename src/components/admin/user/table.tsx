@@ -1,63 +1,145 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { getUsersAPI } from "@/services/api";
-import { PlusOutlined } from "@ant-design/icons";
-import type { ActionType, ProColumns } from "@ant-design/pro-components";
-import { ProTable } from "@ant-design/pro-components";
+import { dateRangeValidate } from "@/services/helper";
+import { PlusOutlined, EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import {
+  ProTable,
+  type ActionType,
+  type ProColumns,
+} from "@ant-design/pro-components";
 import { Button } from "antd";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import DetailUser from "./detail";
+import CreateUser from "./create";
 
-const columns: ProColumns<IUserTable>[] = [
-  {
-    dataIndex: "index",
-    valueType: "indexBorder",
-    width: 48,
-  },
-  {
-    title: "_id",
-    dataIndex: "_id",
-  },
-  {
-    title: "Full Name",
-    dataIndex: "fullName",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Created At",
-    dataIndex: "createdAt",
-  },
-
-  {
-    title: "hoidanit",
-    dataIndex: "title",
-    copyable: true,
-    ellipsis: true,
-    tooltip: "标题过长会自动收缩",
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: "此项为必填项",
-        },
-      ],
-    },
-  },
-];
+type TSearch = {
+  fullName: string;
+  email: string;
+  createdAt: string;
+  createdAtRange: string;
+};
 
 const TableUser = () => {
   const actionRef = useRef<ActionType>();
+  const [meta, setMeta] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+    page: 0,
+  });
+
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+  const [dataViewDetail, setDataViewDetail] = useState<IUserTable | null>(null);
+
+  const [openModalCreate, setOpenModalCreate] = useState(false);
+
+  const columns: ProColumns<IUserTable>[] = [
+    {
+      dataIndex: "index",
+      valueType: "indexBorder",
+      width: 48,
+    },
+    {
+      title: "Id",
+      dataIndex: "_id",
+      hideInSearch: true,
+      render(dom, entity, index, action, schema) {
+        return (
+          <a
+            onClick={() => {
+              setDataViewDetail(entity);
+              setOpenViewDetail(true);
+            }}
+            href="#"
+          >
+            {entity._id}
+          </a>
+        );
+      },
+    },
+    {
+      title: "Full Name",
+      dataIndex: "fullName",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      copyable: true,
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      valueType: "date",
+      sorter: true,
+      hideInSearch: true,
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAtRange",
+      valueType: "dateRange",
+      hideInTable: true,
+    },
+    {
+      title: "Action",
+      hideInSearch: true,
+      render(dom, entity, index, action, schema) {
+        return (
+          <>
+            <EditTwoTone
+              twoToneColor="#f57800"
+              style={{ cursor: "pointer", marginRight: 15 }}
+            />
+
+            <DeleteTwoTone
+              twoToneColor="#ff4d4f"
+              style={{ cursor: "pointer" }}
+            />
+          </>
+        );
+      },
+    },
+  ];
+
+  const refreshTable = () => {
+    actionRef.current?.reload();
+  }
+
   return (
     <>
-      <ProTable<IUserTable>
+      <ProTable<IUserTable, TSearch>
         columns={columns}
         actionRef={actionRef}
         cardBordered
         request={async (params, sort, filter) => {
-          console.log(sort, filter);
-          const res = await getUsersAPI();
+          console.log(params, sort, filter);
 
+          let query = "";
+          if (params) {
+            query += `current=${params.current}&pageSize=${params.pageSize}`;
+            if (params.email) {
+              query += `&email=/${params.email}/i`;
+            }
+            if (params.fullName) {
+              query += `&fullName=/${params.fullName}/i`;
+            }
+
+            const createDateRange = dateRangeValidate(params.createdAtRange);
+            if (createDateRange) {
+              query += `&createdAt>=${createDateRange[0]}&createdAt<=${createDateRange[1]}`;
+            }
+          }
+
+          //default
+          query += `&sort=-createdAt`;
+
+          if (sort && sort.createdAt) {
+            query += `&sort=${sort.createdAt === "ascend" ? "createdAt" : "-createdAt"}`;
+          }
+
+          const res = await getUsersAPI(query);
+          if (res.data) {
+            setMeta(res.data.meta);
+          }
           return {
             // data: data.data,
             data: res.data?.result,
@@ -66,22 +148,19 @@ const TableUser = () => {
             total: res.data?.meta.total,
           };
         }}
-        rowKey="id"
-        form={{
-          // 由于配置了 transform，提交的参数与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === "get") {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
+        rowKey="_id"
         pagination={{
-          pageSize: 5,
-          onChange: (page) => console.log(page),
+          current: meta.current,
+          pageSize: meta.pageSize,
+          showSizeChanger: true,
+          total: meta.total,
+          showTotal: (total, range) => {
+            return (
+              <div>
+                {range[0]}-{range[1]} of {total} rows
+              </div>
+            );
+          },
         }}
         headerTitle="Table user"
         toolBarRender={() => [
@@ -89,14 +168,27 @@ const TableUser = () => {
             key="button"
             icon={<PlusOutlined />}
             onClick={() => {
-              actionRef.current?.reload();
+              setOpenModalCreate(true);
             }}
             type="primary"
           >
             Add new
-          </Button>,
+          </Button>
         ]}
       />
+
+      <DetailUser
+        openViewDetail={openViewDetail}
+        setOpenViewDetail={setOpenViewDetail}
+        dataViewDetail={dataViewDetail}
+        setDataViewDetail={setDataViewDetail}
+      />
+
+      <CreateUser
+        openModalCreate={openModalCreate}
+        setOpenModalCreate={setOpenModalCreate}
+        refreshTable={refreshTable}
+        />
     </>
   );
 };
