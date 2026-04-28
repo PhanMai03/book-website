@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export {};
 
 declare global {
@@ -61,4 +62,11 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
+
+  interface IResponseImport{
+    countSuccess: number;
+    countError: number;
+    detail: any;
+  }
 }
+

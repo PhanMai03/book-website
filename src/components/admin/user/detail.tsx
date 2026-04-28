@@ -1,4 +1,3 @@
-import React from "react";
 import { Drawer, Descriptions, Badge, Avatar } from "antd";
 import dayjs from "dayjs";
 import { FORMATE_DATE_VN } from "@/services/helper";
