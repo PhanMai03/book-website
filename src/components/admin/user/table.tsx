@@ -60,22 +60,22 @@ const TableUser = () => {
       refreshTable();
     } else {
       notification.error({
-        message: 'An error has occurred.',
-        description: res.message
+        message: "An error has occurred.",
+        description: res.message,
       });
     }
-    setIsDeleteUser(false)
+    setIsDeleteUser(false);
   };
 
   const columns: ProColumns<IUserTable>[] = [
     {
-      dataIndex: 'index',
-      valueType: 'indexBorder',
+      dataIndex: "index",
+      valueType: "indexBorder",
       width: 48,
     },
     {
-      title: 'Id',
-      dataIndex: '_id',
+      title: "Id",
+      dataIndex: "_id",
       hideInSearch: true,
       render(dom, entity, index, action, schema) {
         return (
@@ -92,18 +92,18 @@ const TableUser = () => {
       },
     },
     {
-      title: 'Full Name',
-      dataIndex: 'fullName',
+      title: "Full Name",
+      dataIndex: "fullName",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
+      title: "Email",
+      dataIndex: "email",
       copyable: true,
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      valueType: 'date',
+      title: "Created At",
+      dataIndex: "createdAt",
+      valueType: "date",
       sorter: true,
       hideInSearch: true,
       // render(dom, entity, index, action, schema) {
@@ -115,13 +115,13 @@ const TableUser = () => {
       // },
     },
     {
-      title: 'Created At',
-      dataIndex: 'createdAtRange',
-      valueType: 'dateRange',
+      title: "Created At",
+      dataIndex: "createdAtRange",
+      valueType: "dateRange",
       hideInTable: true,
     },
     {
-      title: 'Action',
+      title: "Action",
       hideInSearch: true,
       render(dom, entity, index, action, schema) {
         return (
@@ -136,22 +136,21 @@ const TableUser = () => {
             />
 
             <Popconfirm
-            placement="leftTop"
+              placement="leftTop"
               title="Confirm deletion of user"
               description="Are you sure to delete user?"
               onConfirm={() => handleDeleteUser(entity._id)}
               okText="Yes"
               cancelText="No"
-              okButtonProps={{loading: isDeleteUser}}
+              okButtonProps={{ loading: isDeleteUser }}
             >
-            <span style={{ cursor: "pointer", margin: "0 20px" }}>
-                 <DeleteTwoTone
-              twoToneColor="#ff4d4f"
-              style={{cursor: "pointer"}}
-            />
-            </span>
+              <span style={{ cursor: "pointer", margin: "0 20px" }}>
+                <DeleteTwoTone
+                  twoToneColor="#ff4d4f"
+                  style={{ cursor: "pointer" }}
+                />
+              </span>
             </Popconfirm>
-         
           </>
         );
       },
@@ -222,11 +221,11 @@ const TableUser = () => {
         }}
         headerTitle="Table user"
         toolBarRender={() => [
-          <Button icon={<ExportOutlined />} type="primary">
-            <CSVLink data={currentDataTable} filename="export-user.csv">
+          <CSVLink data={currentDataTable} filename="export-user.csv">
+            <Button icon={<ExportOutlined />} type="primary">
               Export
-            </CSVLink>
-          </Button>,
+            </Button>
+          </CSVLink>,
 
           <Button
             icon={<CloudUploadOutlined />}

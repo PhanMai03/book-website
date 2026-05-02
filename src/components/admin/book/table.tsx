@@ -10,10 +10,12 @@ import {
   type ActionType,
   type ProColumns,
 } from "@ant-design/pro-components";
-import { Button, message, notification, Popconfirm } from "antd";
+import { App, Button, message, notification, Popconfirm } from "antd";
 import { useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import DetailBook from "./detail";
+import CreateBook from "./create";
+import UpdateBook from "./update";
 
 type TSearch = {
   mainText: string;
@@ -42,12 +44,13 @@ const TableBook = () => {
   const [dataUpdate, setDataUpdate] = useState<IBookTable | null>(null);
 
   const [isDeleteBook, setIsDeleteBook] = useState<boolean>(false);
+  const { message, notification } = App.useApp();
 
   const handleDeleteBook = async (_id: string) => {
     setIsDeleteBook(true);
     const res = await deleteBookAPI(_id);
     if (res && res.data) {
-      message.success("Delete user successfully");
+      message.success("Delete users successfully");
       refreshTable();
     } else {
       notification.error({
@@ -210,11 +213,11 @@ const TableBook = () => {
         }}
         headerTitle="Table book"
         toolBarRender={() => [
-          <Button icon={<ExportOutlined />} type="primary">
-            <CSVLink data={currentDataTable} filename="export-book.csv">
-              Export
-            </CSVLink>
-          </Button>,
+          <CSVLink data={currentDataTable} filename="export-book.csv">
+            <Button icon={<ExportOutlined />} type="primary">
+             Export
+            </Button>
+          </CSVLink>,
 
           <Button
             key="button"
@@ -234,6 +237,20 @@ const TableBook = () => {
         setOpenViewDetail={setOpenViewDetail}
         dataViewDetail={dataViewDetail}
         setDataViewDetail={setDataViewDetail}
+      />
+
+      <CreateBook
+        openModalCreate={openModalCreate}
+        setOpenModalCreate={setOpenModalCreate}
+        refreshTable={refreshTable}
+      />
+
+      <UpdateBook
+        openModalUpdate={openModalUpdate}
+        setOpenModalUpdate={setOpenModalUpdate}
+        refreshTable={refreshTable}
+        setDataUpdate={setDataUpdate}
+        dataUpdate={dataUpdate}
       />
     </>
   );
