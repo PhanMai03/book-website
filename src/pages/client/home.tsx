@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getBooksAPI, getCategoryAPI } from "@/services/api";
 import { FilterTwoTone, ReloadOutlined } from "@ant-design/icons";
 import {
@@ -15,13 +16,15 @@ import {
   type FormProps,
 } from "antd";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "styles/home.scss";
 
 type FieldType = {
-  fullName: string;
-  password: string;
-  email: string;
-  phone: string;
+ range: {
+  from: number;
+  to: number
+ }
+ category: string[]
 };
 const HomePage = () => {
   const [listCategory, setListCategory] = useState<
@@ -88,10 +91,30 @@ const HomePage = () => {
   };
 
   const handleChangeFilter = (changedValues: any, values: any) => {
-    console.log(">>> check handleChangeFilter", changedValues, values);
+    console.log(">>> check handleChangeFilter", changedValues, values)
+    //only fire if category changes
+    if(changedValues.category){
+      const cate = values.category;
+      if(cate && cate.length > 0){
+        const f = cate.join(',');
+        setFilter(`category=${f}`)
+      }else{
+        //reset data -> fetch all
+        setFilter('');
+      }
+    }
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {};
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    if(values?.range?.from >= 0 && values?.range?.to >= 0){
+      let f = `price>=${values?.range?.from} & price<=${values?.range?.to}`;
+      if (values?.category?.length){
+        const cate = values?.category.join(',');
+        f += `&category=${cate}`
+      }
+      setFilter(f);
+    }
+  };
 
   const onChange = (key: string) => {
     console.log(key);
@@ -99,40 +122,44 @@ const HomePage = () => {
 
   const items = [
     {
-      key: "1",
+      key: "sort=-sold",
       label: "Phổ biến",
       children: <></>,
     },
     {
-      key: "2",
+      key: "sort=-updatedAt",
       label: "Hàng mới",
       children: <></>,
     },
     {
-      key: "3",
+      key: "sort=price",
       label: "Giá Thấp Đến Cao",
       children: <></>,
     },
     {
-      key: "4",
+      key: "sort=-price",
       label: "Giá Cao Đến Thấp",
       children: <></>,
     },
   ];
 
+  let navigate = useNavigate();
   return (
     <div
       className="homepage-container"
       style={{ maxWidth: 1440, margin: "0 auto" }}
     >
       <Row gutter={[20, 20]}>
-        <Col md={4} xs={0} style={{ border: "1px solid green" }}>
+        <Col md={4} xs={0} style={{ border: "1px" }}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>
               {" "}
               <FilterTwoTone /> Bo loc tim kiem{" "}
             </span>
-            <ReloadOutlined title="Reset" onClick={() => form.resetFields()} />
+            <ReloadOutlined title="Reset" onClick={() => {
+              form.resetFields();
+              setFilter('')
+            }} />
           </div>
           <Form
             onFinish={onFinish}
@@ -227,12 +254,16 @@ const HomePage = () => {
               style={{ padding: "20px", background: "#fff", borderRadius: 5 }}
             >
               <Row>
-                <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+                <Tabs defaultActiveKey="sort=-sold" 
+                items={items} 
+                onChange={(value) => {setSortQuery(value)}} 
+                style={{overflowX: "auto"}} />
               </Row>
               <Row className="customize-row">
                 {listBook?.map((item, index) => {
                   return (
-                    <div className="column" key={`book-${index}`}>
+                    <div onClick={() => navigate(`/book/${item._id}`)} 
+                    className="column" key={`book-${index}`}>
                       <div className="wrapper">
                         <div className="thumbnail">
                           <img
