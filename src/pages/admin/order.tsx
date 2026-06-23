@@ -1,8 +1,11 @@
+import TableOrder from '@/components/admin/order'
 import React from 'react'
 
 function ManageOrderPage() {
   return (
-    <div>ManageOrderPage</div>
+    <div>
+      <TableOrder />
+    </div>
   )
 }
 

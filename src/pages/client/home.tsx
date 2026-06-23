@@ -16,7 +16,7 @@ import {
   type FormProps,
 } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "styles/home.scss";
 
 type FieldType = {
@@ -27,6 +27,7 @@ type FieldType = {
  category: string[]
 };
 const HomePage = () => {
+  const[searchTerm] = useOutletContext() as any;
   const [listCategory, setListCategory] = useState<
     { label: string; value: string }[]
   >([]);
@@ -57,7 +58,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchBook();
-  }, [current, pageSize, filter, sortQuery]);
+  }, [current, pageSize, filter, sortQuery, searchTerm]);
 
   const fetchBook = async () => {
     setIsLoading(true);
@@ -69,6 +70,9 @@ const HomePage = () => {
       query += `&${sortQuery}`;
     }
 
+    if(searchTerm){
+      query += `&mainText=/${searchTerm}/i`;
+    }
     const res = await getBooksAPI(query);
     if (res && res.data) {
       setListBook(res.data.result);
@@ -91,7 +95,7 @@ const HomePage = () => {
   };
 
   const handleChangeFilter = (changedValues: any, values: any) => {
-    console.log(">>> check handleChangeFilter", changedValues, values)
+    // console.log(">>> check handleChangeFilter", changedValues, values)
     //only fire if category changes
     if(changedValues.category){
       const cate = values.category;
@@ -116,9 +120,9 @@ const HomePage = () => {
     }
   };
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  // const onChange = (key: string) => {
+  //   console.log(key);
+  // };
 
   const items = [
     {

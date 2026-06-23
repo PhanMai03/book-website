@@ -165,7 +165,7 @@ const TableBook = () => {
         actionRef={actionRef}
         cardBordered
         request={async (params, sort, filter) => {
-          console.log(params, sort, filter);
+          // console.log(params, sort, filter);
 
           let query = "";
           if (params) {

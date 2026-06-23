@@ -6,17 +6,21 @@ import BookPage from "pages/client/book";
 import AboutPage from "pages/client/about";
 import LoginPage from "pages/client/auth/login";
 import RegisterPage from "pages/client/auth/register";
+import OrderPage from "pages/client/order";
+// import CheckoutPage from "pages/client/checkout";
+// import HistoryPage from "pages/client/history";
 import "styles/global.scss";
 import HomePage from "pages/client/home";
 import { App, ConfigProvider } from "antd";
 import ProtectedRoute from "@/components/auth";
 import LayoutAdmin from "./components/layout/admin";
-import DashBoardPage from "./pages/admin/dasboard";
 import ManageUserPage from "./pages/admin/user";
 import ManageOrderPage from "./pages/admin/order";
 import ManageBookPage from "./pages/admin/book";
 import { AppProvider } from "./components/context/context";
 import enUS from 'antd/es/locale/en_US'
+import HistoryPage from "./pages/client/history";
+import DashBoardPage from "./pages/admin/dashboard";
 
 const router = createBrowserRouter([
   {
@@ -36,10 +40,18 @@ const router = createBrowserRouter([
         element: <AboutPage />,
       },
       {
-        path: "/checkout",
+        path: "/order",
         element: (
           <ProtectedRoute>
-            <div>checkout page</div>
+            <OrderPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/history",
+        element: (
+          <ProtectedRoute>
+            <HistoryPage />
           </ProtectedRoute>
         ),
       },

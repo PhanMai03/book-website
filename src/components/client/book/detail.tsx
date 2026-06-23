@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable react-hooks/set-state-in-effect */
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import { Col, Rate, Row } from "antd";
-import {useEffect, useRef, useState } from "react";
+import { App, Col, Rate, Row } from "antd";
+import { useEffect, useRef, useState } from "react";
 import { BsCartPlus } from "react-icons/bs";
 import ImageGallery from "react-image-gallery";
 import ModalGallery from "./gallery";
 import "react-image-gallery/styles/image-gallery.css";
 import "styles/book.scss";
 import { useCurrentApp } from "@/components/context/context";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
   currentBook: IBookTable | null;
 }
 
-type UserAction = "MINUS" | "PLUS"
+type UserAction = "MINUS" | "PLUS";
 
 const BookDetail = (props: IProps) => {
   const { currentBook } = props;
@@ -32,8 +33,9 @@ const BookDetail = (props: IProps) => {
   const refGallery = useRef<ImageGallery>(null);
   const [currentQuantity, setCurrentQuantity] = useState<number>(1);
 
-  const {carts, setCarts} = useCurrentApp();
-
+  const { carts, setCarts, user } = useCurrentApp();
+  const { message } = App.useApp();
+  const navigate = useNavigate();
   useEffect(() => {
     if (currentBook) {
       const images: {
@@ -70,65 +72,75 @@ const BookDetail = (props: IProps) => {
   };
 
   const handleChangeButton = (type: UserAction) => {
-    if(type === 'MINUS'){
-      if(currentQuantity - 1 <= 0) return;
-      setCurrentQuantity(currentQuantity)
+    if (type === "MINUS") {
+      if (currentQuantity - 1 <= 0) return;
+      setCurrentQuantity(currentQuantity - 1);
     }
-    if(type === 'PLUS' && currentBook){
-      if(currentQuantity === +currentBook.quantity) return; //max
+    if (type === "PLUS" && currentBook) {
+      if (currentQuantity === +currentBook.quantity) return; //max
       setCurrentQuantity(currentQuantity + 1);
     }
-  }
+  };
 
   const handleChangeInput = (value: string) => {
     //+  tu dong convert string to number
-    if(!isNaN(+value)){
-      if(+value > 0 && currentBook && +value < +currentBook.quantity){
+    if (!isNaN(+value)) {
+      if (+value > 0 && currentBook && +value < +currentBook.quantity) {
         setCurrentQuantity(+value);
       }
     }
-  }
+  };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (isBuyNow = false) => {
+    if (!user) {
+      message.error("Ban can dang nhap de thuc hien tinh nang nay.");
+      return;
+    }
     //update localStorage
     const cartStorage = localStorage.getItem("carts");
-    if(cartStorage && currentBook){
+    if (cartStorage && currentBook) {
       //update
       const carts = JSON.parse(cartStorage) as ICart[];
 
       //check exist
       // eslint-disable-next-line prefer-const
-      let isExistIndex = carts.findIndex(c => c._id === currentBook?._id);
-      if(isExistIndex > -1){
+      let isExistIndex = carts.findIndex((c) => c._id === currentBook?._id);
+      if (isExistIndex > -1) {
         carts[isExistIndex].quantity =
-        carts[isExistIndex].quantity + currentQuantity;
+          carts[isExistIndex].quantity + currentQuantity;
       } else {
         carts.push({
           quantity: currentQuantity,
           _id: currentBook._id,
-          detail: currentBook
-        })
+          detail: currentBook,
+        });
       }
 
       localStorage.setItem("carts", JSON.stringify(carts));
 
       //sync React Context
       setCarts(carts);
-
-    } else{
+      message.success("Thêm thành công");
+    } else {
       //create
-      const data = [{
-        _id: currentBook?._id!,
-        quantity: currentQuantity,
-        detail: currentBook!
-      }]
-      localStorage.setItem("carts", JSON.stringify(data))
+      const data = [
+        {
+          _id: currentBook?._id!,
+          quantity: currentQuantity,
+          detail: currentBook!,
+        },
+      ];
+      localStorage.setItem("carts", JSON.stringify(data));
 
       //sync React Context
       setCarts(data);
+      message.success("Thêm vào giỏ hàng thành công");
     }
-  }
-  console.log(carts)
+    if (isBuyNow) {
+      navigate("/order");
+    } else message.success("Them san pham vao gio hang thanh cong");
+  };
+  // console.log(carts)
 
   return (
     <div style={{ background: "#efefef", padding: "20px 0" }}>
@@ -169,7 +181,7 @@ const BookDetail = (props: IProps) => {
                   Tac gia: <a href="#">{currentBook?.author}</a>
                 </div>
                 <div className="title">{currentBook?.mainText}</div>
-                
+
                 <div className="rating">
                   <Rate
                     value={5}
@@ -197,11 +209,16 @@ const BookDetail = (props: IProps) => {
                 <div className="quantity">
                   <span className="left">So luong</span>
                   <span className="right">
-                    <button onClick={() => handleChangeButton('MINUS')}>
+                    <button onClick={() => handleChangeButton("MINUS")}>
                       <MinusOutlined />
                     </button>
-                    <input onChange={(event) => handleChangeInput(event.target.value)} value={currentQuantity}/>
-                    <button onClick={() => handleChangeButton('PLUS')}>
+                    <input
+                      onChange={(event) =>
+                        handleChangeInput(event.target.value)
+                      }
+                      value={currentQuantity}
+                    />
+                    <button onClick={() => handleChangeButton("PLUS")}>
                       <PlusOutlined />
                     </button>
                   </span>
@@ -213,7 +230,9 @@ const BookDetail = (props: IProps) => {
                     <span>Them vao gio hang</span>
                   </button>
 
-                  <button className="now">Mua ngay</button>
+                  <button onClick={() => handleAddToCart(true)} className="now">
+                    Mua ngay
+                  </button>
                 </div>
               </Col>
             </Col>

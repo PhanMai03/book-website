@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export {};
 
@@ -19,38 +20,38 @@ declare global {
     result: T[];
   }
 
-  interface ILogin{
+  interface ILogin {
     access_token: string;
-    user:{
+    user: {
       email: string;
       phone: string;
       fullName: string;
       role: string;
       avatar: string;
       id: string;
-    }
+    };
   }
 
-  interface IRegister{
+  interface IRegister {
     _id: string;
     email: string;
     fullName: string;
   }
 
-  interface IUser{
-      email: string;
-      phone: string;
-      fullName: string;
-      role: string;
-      avatar: string;
-      id: string;
+  interface IUser {
+    email: string;
+    phone: string;
+    fullName: string;
+    role: string;
+    avatar: string;
+    id: string;
   }
 
-  interface IFetchAccount{
+  interface IFetchAccount {
     user: IUser;
   }
 
-  interface IUserTable{
+  interface IUserTable {
     _id: string;
     fullName: string;
     email: string;
@@ -63,13 +64,13 @@ declare global {
     updatedAt: Date;
   }
 
-  interface IResponseImport{
+  interface IResponseImport {
     countSuccess: number;
     countError: number;
     detail: any;
   }
 
-  interface IBookTable{
+  interface IBookTable {
     _id: string;
     thumbnail: string;
     slider: string[];
@@ -77,7 +78,7 @@ declare global {
     author: string;
     price: number;
     sold: number;
-    quantity : number;
+    quantity: number;
     category: string;
     createdAt: Date;
     updatedAt: Date;
@@ -86,7 +87,41 @@ declare global {
   interface ICart {
     _id: string;
     quantity: number;
-    detail: IBookTable
+    detail: IBookTable;
+  }
+
+  interface IHistory {
+    _id: string;
+    name: string;
+    type: string;
+    email: string;
+    phone: string;
+    userId: string;
+    detail: {
+      _id: string;
+      bookName: string;
+      quantity: number;
+    }[];
+    totalPrice: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+
+  interface IOrderTable {
+    _id: string;
+    name: string;
+    address: string;
+    phone: string;
+    type: string;
+    paymentStatus: string;
+    paymentRef: string;
+    detail: {
+      _id: string;
+      bookName: string;
+      quantity: number;
+    }[];
+    totalPrice: number;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }
-

@@ -1,0 +1,155 @@
+.register-page {
+  min-height: 100vh;
+  // ĐỒI MÀU: Đổi sang màu nền xám nhạt nhẹ giống bên login để đồng bộ
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  .register-container {
+    display: flex;
+    width: 100%;
+    max-width: 1000px; // Tăng lên 1000px bằng với login-container
+    background: #ffffff;
+    border-radius: 20px; // Bo góc 20px giống login
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); // Shadow đồng bộ với login
+    overflow: hidden;
+    min-height: 600px; // Độ cao tối thiểu bằng với login
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    // Cột bên trái: Banner giới thiệu (Ăn theo màu gradient xanh dương của Login)
+    .register-left {
+      flex: 1;
+      // ĐỒI MÀU: Đúng mã gradient #1677ff và #69b1ff của trang login bạn gửi
+      background: linear-gradient(135deg, #1677ff, #69b1ff);
+      padding: 60px 40px; // Padding lớn bằng bên login
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+
+      h1 {
+        font-size: 48px; // Font chữ lớn bằng login
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+
+      p {
+        font-size: 18px; // Cỡ chữ bằng login
+        line-height: 1.8;
+        opacity: 0.95;
+      }
+
+      @media (max-width: 768px) {
+        text-align: center;
+        padding: 40px 20px;
+
+        h1 { font-size: 36px; }
+        p { font-size: 16px; }
+      }
+    }
+
+    // Cột bên phải: Form điền thông tin Đăng ký
+    .register-right {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .register-form {
+        width: 100%;
+        max-width: 400px; // Giới hạn khung form bằng bên login
+
+        h2 {
+          text-align: center;
+          margin-bottom: 30px;
+          font-size: 32px;
+          font-weight: 700;
+          color: #222; // Màu tiêu đề xám đen giống login
+        }
+
+        .ant-form-item {
+          margin-bottom: 18px;
+        }
+
+        .ant-form-item-label > label {
+          font-weight: 600;
+          color: #222;
+        }
+
+        // Ô input thường và ô bảo mật Password của Ant Design
+        .ant-input,
+        .ant-input-affix-wrapper {
+          height: 45px; // Cao 45px đúng chuẩn login
+          border-radius: 10px;
+          border: 1px solid #d9d9d9;
+          transition: all 0.2s;
+
+          // FIX TRIỆT ĐỂ: Khử lỗi lệch viền/viền kép của ô Password ẩn phía trong
+          input.ant-input {
+            height: 100% !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+
+          // Hiệu ứng hover/focus đổi viền xanh dương đồng bộ Ant Design
+          &:hover,
+          &:focus,
+          &-focused {
+            border-color: #1677ff !important;
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1) !important;
+          }
+        }
+
+        // Nút bấm đăng ký
+        .btn-register {
+          height: 45px;
+          border-radius: 10px;
+          font-size: 16px;
+          font-weight: 600;
+          background-color: #1677ff; // Màu xanh thương hiệu chính
+          border-color: #1677ff;
+          color: #ffffff;
+          margin-top: 10px;
+          transition: all 0.2s;
+
+          &:hover, &:focus {
+            background-color: #4096ff !important; // Màu hover sáng nhẹ của AntD
+            border-color: #4096ff !important;
+          }
+        }
+
+        .ant-divider-inner-text {
+          color: #8c8c8c;
+          font-size: 13px;
+        }
+
+        .login-text {
+          text-align: center;
+          margin-top: 10px;
+          color: #666;
+          font-size: 14px;
+
+          a {
+            color: #1677ff; // Link chuyển màu xanh dương đồng bộ
+            font-weight: 600;
+            transition: color 0.2s;
+
+            &:hover {
+              color: #4096ff;
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+}

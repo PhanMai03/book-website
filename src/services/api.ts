@@ -11,7 +11,7 @@ export const loginAPI = (username: string, password: string) => {
     },
     {
       headers: {
-        delay: 3000,
+        delay: 100,
       },
     },
   );
@@ -36,7 +36,7 @@ export const fetchAccountAPI = () => {
   const urlBackend = "/api/v1/auth/account";
   return axios.get<IBackendRes<IFetchAccount>>(urlBackend, {
     headers: {
-      delay: 1000,
+      delay: 100,
     },
   });
 };
@@ -97,7 +97,7 @@ export const getBooksAPI = (query: string) => {
   return axios.get<IBackendRes<IModelPaginate<IBookTable>>>(urlBackend,
      {
       headers: {
-        delay: 3000,
+        delay: 100,
       },
     },
   );
@@ -167,7 +167,63 @@ export const getBookByIdAPI = (id: string) => {
   return axios.get<IBackendRes<IBookTable>>(urlBackend, 
     {
       headers: {
-        delay: 3000
+        delay: 100
       }
     });
+}
+export const createOrderAPI = (
+  name: string,
+  phone: string,
+  address: string,
+  totalPrice: number,
+  type: string,
+  detail: any
+) => {
+  const urlBackend = "/api/v1/order";
+  return axios.post<IBackendRes<IRegister>>(urlBackend, {
+    name,
+    phone,
+    address,
+    totalPrice,
+    type,
+    detail
+  });
+};
+
+export const getHistoryAPI = () => {
+  const urlBackend = "/api/v1/history";
+  return axios.get<IBackendRes<IHistory[]>>(urlBackend);
+};
+
+export const updateUserInfoAPI = (
+  fullName: string,
+  phone: string,
+  avatar: string,
+  _id: string
+) => {
+  const urlBackend = "/api/v1/user";
+  return axios.put<IBackendRes<IRegister>>(urlBackend, {
+    fullName, phone, avatar, _id
+  })
+};
+
+export const updateUserPasswordAPI = (email: string, oldpass: string, newpass: string) => {
+  const urlBackend = "/api/v1/user/change-password";
+  return axios.post<IBackendRes<IRegister>>(urlBackend, {
+    email, oldpass, newpass
+  })
+}
+
+export const getOrdersAPI = (query: string) => {
+  const urlBackend = `/api/v1/order?${query}`;
+  return axios.get<IBackendRes<IModelPaginate<IOrderTable>>>(urlBackend)
+}
+
+export const getDashboardAPI = () => {
+  const urlBackend = "/api/v1/database/dashboard";
+  return axios.get<IBackendRes<{
+    countOrder: number;
+    countUser: number;
+    countBook: number
+  }>>(urlBackend)
 }
