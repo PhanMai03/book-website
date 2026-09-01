@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { Col, Modal, Row, Image } from "antd";
 import { useEffect, useRef, useState } from "react";
-import ImageGallery from "react-image-gallery";
+import ImageGallery, { type ImageGalleryRef } from "react-image-gallery";
 import "styles/book.scss";
 
 interface IProps {
@@ -16,10 +16,11 @@ interface IProps {
   }[];
   title: string;
 }
+
 const ModalGallery = (props: IProps) => {
   const { isOpen, setIsOpen, currentIndex, items, title } = props;
   const [activeIndex, setActiveIndex] = useState(0);
-  const refGallery = useRef<ImageGallery>(null);
+  const refGallery = useRef<ImageGalleryRef | null>(null);
 
   useEffect(() => {
     if (isOpen) {

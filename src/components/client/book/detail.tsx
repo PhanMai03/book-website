@@ -4,7 +4,7 @@ import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { App, Col, Rate, Row } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { BsCartPlus } from "react-icons/bs";
-import ImageGallery from "react-image-gallery";
+import ImageGallery, { type ImageGalleryRef } from "react-image-gallery";
 import ModalGallery from "./gallery";
 import "react-image-gallery/styles/image-gallery.css";
 import "styles/book.scss";
@@ -30,10 +30,10 @@ const BookDetail = (props: IProps) => {
   const [isOpenModalGallery, setIsOpenModalGallery] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const refGallery = useRef<ImageGallery>(null);
+  const refGallery = useRef<ImageGalleryRef | null>(null);
   const [currentQuantity, setCurrentQuantity] = useState<number>(1);
 
-  const { carts, setCarts, user } = useCurrentApp();
+  const {setCarts, user } = useCurrentApp();
   const { message } = App.useApp();
   const navigate = useNavigate();
   useEffect(() => {

@@ -1,127 +1,127 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export {};
+  /* eslint-disable @typescript-eslint/no-empty-object-type */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  export {};
 
-declare global {
-  interface IBackendRes<T> {
-    error?: string | string[];
-    message: string;
-    statusCode: number | string;
-    data?: T;
-  }
+  declare global {
+    interface IBackendRes<T> {
+      error?: string | string[];
+      message: string;
+      statusCode: number | string;
+      data?: T;
+    }
 
-  interface IModelPaginate<T> {
-    meta: {
-      current: number;
-      pageSize: number;
-      pages: number;
-      total: number;
-    };
-    result: T[];
-  }
+    interface IModelPaginate<T> {
+      meta: {
+        current: number;
+        pageSize: number;
+        pages: number;
+        total: number;
+      };
+      result: T[];
+    }
 
-  interface ILogin {
-    access_token: string;
-    user: {
+    interface ILogin {
+      access_token: string;
+      user: {
+        email: string;
+        phone: string;
+        fullName: string;
+        role: string;
+        avatar: string;
+        id: string;
+      };
+    }
+
+    interface IRegister {
+      _id: string;
+      email: string;
+      fullName: string;
+    }
+
+    interface IUser {
       email: string;
       phone: string;
       fullName: string;
       role: string;
       avatar: string;
       id: string;
-    };
-  }
+    }
 
-  interface IRegister {
-    _id: string;
-    email: string;
-    fullName: string;
-  }
+    interface IFetchAccount {
+      user: IUser;
+    }
 
-  interface IUser {
-    email: string;
-    phone: string;
-    fullName: string;
-    role: string;
-    avatar: string;
-    id: string;
-  }
-
-  interface IFetchAccount {
-    user: IUser;
-  }
-
-  interface IUserTable {
-    _id: string;
-    fullName: string;
-    email: string;
-    phone: string;
-    role: string;
-    avatar: string;
-    isActive: boolean;
-    type: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface IResponseImport {
-    countSuccess: number;
-    countError: number;
-    detail: any;
-  }
-
-  interface IBookTable {
-    _id: string;
-    thumbnail: string;
-    slider: string[];
-    mainText: string;
-    author: string;
-    price: number;
-    sold: number;
-    quantity: number;
-    category: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface ICart {
-    _id: string;
-    quantity: number;
-    detail: IBookTable;
-  }
-
-  interface IHistory {
-    _id: string;
-    name: string;
-    type: string;
-    email: string;
-    phone: string;
-    userId: string;
-    detail: {
+    interface IUserTable {
       _id: string;
-      bookName: string;
-      quantity: number;
-    }[];
-    totalPrice: number;
-    createdAt: Date;
-    updatedAt: Date;
-  }
+      fullName: string;
+      email: string;
+      phone: string;
+      role: string;
+      avatar: string;
+      isActive: boolean;
+      type: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
 
-  interface IOrderTable {
-    _id: string;
-    name: string;
-    address: string;
-    phone: string;
-    type: string;
-    paymentStatus: string;
-    paymentRef: string;
-    detail: {
+    interface IResponseImport {
+      countSuccess: number;
+      countError: number;
+      detail: any;
+    }
+
+    interface IBookTable {
       _id: string;
-      bookName: string;
+      thumbnail: string;
+      slider: string[];
+      mainText: string;
+      author: string;
+      price: number;
+      sold: number;
       quantity: number;
-    }[];
-    totalPrice: number;
-    createdAt: Date;
-    updatedAt: Date;
+      category: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+
+    interface ICart {
+      _id: string;
+      quantity: number;
+      detail: IBookTable;
+    }
+
+    interface IHistory {
+      _id: string;
+      name: string;
+      type: string;
+      email: string;
+      phone: string;
+      userId: string;
+      detail: {
+        _id: string;
+        bookName: string;
+        quantity: number;
+      }[];
+      totalPrice: number;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+
+    interface IOrderTable {
+      _id: string;
+      name: string;
+      address: string;
+      phone: string;
+      type: string;
+      paymentStatus: string;
+      paymentRef: string;
+      detail: {
+        _id: string;
+        bookName: string;
+        quantity: number;
+      }[];
+      totalPrice: number;
+      createdAt: Date;
+      updatedAt: Date;
+    }
   }
-}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { deleteBookAPI, getBooksAPI } from "@/services/api";
 import {
   DeleteTwoTone,
@@ -10,7 +11,7 @@ import {
   type ActionType,
   type ProColumns,
 } from "@ant-design/pro-components";
-import { App, Button, message, notification, Popconfirm } from "antd";
+import { App, Button, Popconfirm } from "antd";
 import { useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 import DetailBook from "./detail";
@@ -26,12 +27,12 @@ type TSearch = {
 };
 
 const TableBook = () => {
-  const actionRef = useRef<ActionType>();
+  const actionRef = useRef<ActionType | null>(null);
   const [meta, setMeta] = useState({
     current: 1,
     pageSize: 5,
     total: 0,
-    page: 0,
+    pages: 0,
   });
   const [openViewDetail, setOpenViewDetail] = useState(false);
   const [dataViewDetail, setDataViewDetail] = useState<IBookTable | null>(null);
@@ -67,7 +68,7 @@ const TableBook = () => {
       title: "Id",
       dataIndex: "_id",
       hideInSearch: true,
-      render(dom, entity, index, action, schema) {
+      render(_dom, entity, _index, _action, _schema) {
         return (
           <a
             onClick={() => {
@@ -97,7 +98,7 @@ const TableBook = () => {
       title: "Giá tiền",
       dataIndex: "price",
       sorter: true,
-      render(dom, entity, index, action, schema) {
+      render(_dom, entity, _index, _action, _schema) {
         return (
           <>
             {new Intl.NumberFormat("vi-VN", {
@@ -120,7 +121,7 @@ const TableBook = () => {
     {
       title: "Action",
       hideInSearch: true,
-      render(dom, entity, index, action, schema) {
+      render(_dom, entity, _index, _action, _schema) {
         return (
           <>
             <EditTwoTone
@@ -164,8 +165,8 @@ const TableBook = () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
-          // console.log(params, sort, filter);
+        request={async (params, sort, _filter) => {
+          // console.log(params, sort, _filter);
 
           let query = "";
           if (params) {

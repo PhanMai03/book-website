@@ -30,12 +30,13 @@ type TSearch = {
 };
 
 const TableUser = () => {
-  const actionRef = useRef<ActionType>();
+
+const actionRef = useRef<ActionType | undefined>(undefined);
   const [meta, setMeta] = useState({
     current: 1,
     pageSize: 5,
     total: 0,
-    page: 0,
+    pages: 0,
   });
 
   const [openViewDetail, setOpenViewDetail] = useState(false);
@@ -77,7 +78,7 @@ const TableUser = () => {
       title: "Id",
       dataIndex: "_id",
       hideInSearch: true,
-      render(dom, entity, index, action, schema) {
+      render(_dom, entity, _index, _action, _schema) {
         return (
           <a
             onClick={() => {
@@ -123,7 +124,7 @@ const TableUser = () => {
     {
       title: "Action",
       hideInSearch: true,
-      render(dom, entity, index, action, schema) {
+      render(_dom, entity, _index, _action, _schema) {
         return (
           <>
             <EditTwoTone
@@ -167,7 +168,7 @@ const TableUser = () => {
         columns={columns}
         actionRef={actionRef}
         cardBordered
-        request={async (params, sort, filter) => {
+        request={async (params, sort, _filter) => {
           // console.log(params, sort, filter);
 
           let query = "";

@@ -13,13 +13,14 @@ type TSearch = {
 };
 
 const TableOrder = () => {
-  const actionRef = useRef<ActionType>();
+  
+const actionRef = useRef<ActionType | undefined>(undefined);
 
   const [meta, setMeta] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
-    page: 0,
+    pages: 0,
   });
 
   const columns: ProColumns<IOrderTable>[] = [

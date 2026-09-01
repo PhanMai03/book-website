@@ -5,7 +5,6 @@ import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import { App, Modal, notification, Table, Upload } from "antd";
 import Exceljs from "exceljs";
-import { Buffer } from "buffer";
 import { useState } from "react";
 import { bulkCreateUserAPI } from "@/services/api";
 import templateFile from "assets/template/user.xlsx?url";
@@ -18,6 +17,7 @@ interface IProps {
   refreshTable: () => void;
 }
 interface IDataImport {
+  id?: number;
   fullName: string;
   email: string;
   phone: string;
@@ -39,7 +39,7 @@ const ImportUser = (props: IProps) => {
     accept:
       ".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 
-    customRequest({ file, onSuccess }) {
+    customRequest({ onSuccess }) {
       setTimeout(() => {
         if (onSuccess) onSuccess("ok");
       }, 1000);
@@ -57,42 +57,51 @@ const ImportUser = (props: IProps) => {
           //lay file = Take out file
           const file = info.fileList[0].originFileObj!;
 
-          //load file to buffer
           const workbook = new Exceljs.Workbook();
           const arrayBuffer = await file.arrayBuffer();
-          const buffer = Buffer.from(arrayBuffer);
-          await workbook.xlsx.load(buffer);
+          await workbook.xlsx.load(arrayBuffer);
 
-          //convert file to json
-          let jsonData: IDataImport[] = [];
+          const jsonData: IDataImport[] = [];
           workbook.worksheets.forEach(function (sheet) {
-            // read first row as data keys
-            let firstRow = sheet.getRow(1);
+            const firstRow = sheet.getRow(1);
             if (!firstRow.cellCount) return;
 
-            let keys = firstRow.values as any[];
+            const keys = firstRow.values as unknown[];
 
             sheet.eachRow((row, rowNumber) => {
-              if (rowNumber == 1) return;
-              let values = row.values;
-              let obj = {};
+              if (rowNumber === 1) return;
+
+              const values = row.values as unknown[];
+              const obj: Record<string, unknown> = {};
               for (let i = 1; i < keys.length; i++) {
-                obj[keys[i]] = values[i];
+                obj[String(keys[i] ?? `column${i}`)] = values[i];
               }
-              jsonData.push(obj);
+
+              const formattedRow: IDataImport = {
+                fullName: String(obj.fullName ?? ""),
+                email: String(obj.email ?? ""),
+                phone: String(obj.phone ?? ""),
+              };
+
+              if (formattedRow.fullName || formattedRow.email || formattedRow.phone) {
+                jsonData.push(formattedRow);
+              }
             });
           });
-          jsonData = jsonData.map((item, index) => {
-            return { ...item, id: index + 1 };
-          });
-          setDataImport(jsonData);
+
+          setDataImport(
+            jsonData.map((item, index) => ({
+              ...item,
+              id: index + 1,
+            }))
+          );
         }
       } else if (status === "error") {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
-    onDrop(e) {
-      // console.log("Dropped files", e.dataTransfer.files);
+    onDrop(_e) {
+      // console.log("Dropped files", _e.dataTransfer.files);
     },
   };
 

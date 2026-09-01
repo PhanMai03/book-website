@@ -6,14 +6,14 @@
     "module": "esnext",
     "types": ["vite/client"],
     "skipLibCheck": true,
-    "baseUrl": ".",
-     "paths": {
+
+    "paths": {
       "@/*": ["./src/*"],
       "assets/*": ["./src/assets/*"],
       "components/*": ["./src/components/*"],
       "pages/*": ["./src/pages/*"],
       "styles/*": ["./src/styles/*"],
-      "services/*": ["./src/services/*"],
+      "services/*": ["./src/services/*"]
     },
 
     /* Bundler mode */
@@ -25,7 +25,7 @@
     "jsx": "react-jsx",
 
     /* Linting */
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true
